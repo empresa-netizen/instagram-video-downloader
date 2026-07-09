@@ -1,15 +1,15 @@
 import { Metadata } from "next";
 
 export const siteConfig = {
-  name: "GramGrabberz",
-  domain: "gram-grabberz.vercel.com",
-  shortName: "GramGrabberz",
-  creator: "riad-azz",
+  name: "MGTEAM Downloader",
+  domain: "downloader.mgteamoficial.site",
+  shortName: "MGTEAM",
+  creator: "MGTEAM",
   description:
-    "Fast, free, and no login required. Just paste the URL and download.",
+    "Baixe posts, reels e carrosséis do Instagram com a identidade MGTEAM.",
   ogDescription:
-    "Fast, free, and no login required. Just paste the URL and download.",
-  url: "https://gram-grabberz.vercel.com",
+    "Ferramenta MGTEAM para baixar posts, reels e carrosséis do Instagram.",
+  url: "https://downloader.mgteamoficial.site",
 };
 
 export const siteMetadata: Metadata = {
@@ -18,7 +18,7 @@ export const siteMetadata: Metadata = {
   creator: siteConfig.creator,
   openGraph: {
     type: "website",
-    locale: "en_US",
+    locale: "pt_BR",
     title: siteConfig.name,
     description: siteConfig.ogDescription,
     url: siteConfig.url,
@@ -44,7 +44,7 @@ export const siteMetadata: Metadata = {
     },
   },
   icons: {
-    icon: "/favicon.ico",
+    icon: "/brand/LOGO_02_Simbolo_FINAL.png",
   },
-  manifest: "/webmanifest.json",
+  manifest: "/web.manifest.json",
 };

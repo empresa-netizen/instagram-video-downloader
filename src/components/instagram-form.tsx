@@ -394,7 +394,7 @@ export function InstagramForm(props: { className?: string }) {
           <Button
             disabled={isDisabled}
             type="submit"
-            className="bg-teal-500 text-white hover:bg-teal-600 dark:bg-teal-700 dark:hover:bg-teal-600"
+            className="rounded-none bg-[#24332D] px-6 font-extrabold tracking-[0.08em] text-[#F6F5F0] uppercase hover:bg-[#314039]"
           >
             {isPending ? (
               <Loader2 className="h-4 w-4 animate-spin" />

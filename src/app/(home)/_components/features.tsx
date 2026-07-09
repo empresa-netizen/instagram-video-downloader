@@ -9,69 +9,88 @@ import { homeSections } from "@/lib/constants";
 export function Features() {
   const t = useTranslations("pages.home.features");
 
+  const cards = [
+    {
+      key: "free" as const,
+      icon: Shield,
+    },
+    {
+      key: "noRegistration" as const,
+      icon: CheckCircle,
+    },
+    {
+      key: "fast" as const,
+      icon: Zap,
+    },
+    {
+      key: "hdQuality" as const,
+      icon: TvMinimalPlay,
+    },
+  ];
+
   return (
     <section
       id={homeSections.features}
-      className="w-full scroll-mt-12 bg-gradient-to-t from-white to-gray-50 py-12 md:py-24 dark:from-gray-900 dark:to-gray-800"
+      className="w-full scroll-mt-12 py-12 md:py-24"
     >
       <div className="container mx-auto px-4 md:px-6">
         <div className="flex flex-col items-center justify-center space-y-4 text-center">
-          <div className="space-y-2">
-            <div className="mb-2 inline-block rounded-lg bg-teal-100 px-3 py-1 text-sm text-teal-700 dark:bg-teal-800 dark:text-teal-50">
+          <div className="space-y-3">
+            <div className="mb-2 inline-flex items-center gap-3 text-xs font-bold tracking-[0.28em] text-[#6B746D] uppercase">
+              <span className="h-px w-8 bg-[#A8CDB7]" />
               {t("badge")}
+              <span className="h-px w-8 bg-[#A8CDB7]" />
             </div>
-            <h2 className="text-3xl font-bold tracking-tighter md:text-4xl">
+            <h2 className="font-serif text-3xl tracking-tight md:text-5xl">
               {t("title")}
             </h2>
-            <p className="text-muted-foreground mx-auto max-w-[700px] md:text-xl">
+            <p className="mx-auto max-w-[700px] text-[#4a564f] md:text-xl dark:text-[#CFC9BE]">
               {t("description")}
             </p>
           </div>
           <div className="mt-8 grid w-full grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 md:gap-8 xl:grid-cols-4">
-            <div className="flex flex-col items-center space-y-3 rounded-xl border bg-white p-4 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-md sm:p-6 dark:bg-gray-800">
-              <div className="rounded-full bg-teal-100 p-3">
-                <Shield className="h-6 w-6 text-teal-600 sm:h-8 sm:w-8" />
-              </div>
-              <h3 className="text-lg font-bold sm:text-xl">
-                {t("cards.free.title")}
-              </h3>
-              <p className="text-muted-foreground text-center text-sm sm:text-base">
-                {t("cards.free.description")}
-              </p>
-            </div>
-            <div className="flex flex-col items-center space-y-3 rounded-xl border bg-white p-4 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-md sm:p-6 dark:bg-gray-800">
-              <div className="rounded-full bg-teal-100 p-3">
-                <CheckCircle className="h-6 w-6 text-teal-600 sm:h-8 sm:w-8" />
-              </div>
-              <h3 className="text-lg font-bold sm:text-xl">
-                {t("cards.noRegistration.title")}
-              </h3>
-              <p className="text-muted-foreground text-center text-sm sm:text-base">
-                {t("cards.noRegistration.description")}
-              </p>
-            </div>
-            <div className="flex flex-col items-center space-y-3 rounded-xl border bg-white p-4 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-md sm:p-6 dark:bg-gray-800">
-              <div className="rounded-full bg-teal-100 p-3">
-                <Zap className="h-6 w-6 text-teal-600 sm:h-8 sm:w-8" />
-              </div>
-              <h3 className="text-lg font-bold sm:text-xl">
-                {t("cards.fast.title")}
-              </h3>
-              <p className="text-muted-foreground text-center text-sm sm:text-base">
-                {t("cards.fast.description")}
-              </p>
-            </div>
-            <div className="flex flex-col items-center space-y-3 rounded-xl border bg-white p-4 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-md sm:p-6 dark:bg-gray-800">
-              <div className="rounded-full bg-teal-100 p-3">
-                <TvMinimalPlay className="h-6 w-6 text-teal-600 sm:h-8 sm:w-8" />
-              </div>
-              <h3 className="text-lg font-bold sm:text-xl">
-                {t("cards.hdQuality.title")}
-              </h3>
-              <p className="text-muted-foreground text-center text-sm sm:text-base">
-                {t("cards.hdQuality.description")}
-              </p>
-            </div>
+            {cards.map((card, index) => {
+              const Icon = card.icon;
+              const isAccent = index === 1;
+              return (
+                <div
+                  key={card.key}
+                  className={
+                    isAccent
+                      ? "flex flex-col items-center space-y-3 border border-transparent bg-[#24332D] p-4 text-[#F6F5F0] transition-all duration-200 hover:-translate-y-1 sm:p-6"
+                      : "flex flex-col items-center space-y-3 border border-[#E4E1D8] bg-white p-4 transition-all duration-200 hover:-translate-y-1 sm:p-6 dark:border-white/10 dark:bg-[#2d3d36]"
+                  }
+                >
+                  <div
+                    className={
+                      isAccent
+                        ? "rounded-full bg-[#A8CDB7]/20 p-3"
+                        : "rounded-full bg-[#A8CDB7]/25 p-3"
+                    }
+                  >
+                    <Icon
+                      className={
+                        isAccent
+                          ? "h-6 w-6 text-[#A8CDB7] sm:h-8 sm:w-8"
+                          : "h-6 w-6 text-[#24332D] sm:h-8 sm:w-8 dark:text-[#A8CDB7]"
+                      }
+                    />
+                  </div>
+                  <h3 className="font-serif text-xl sm:text-2xl">
+                    {t(`cards.${card.key}.title`)}
+                  </h3>
+                  <p
+                    className={
+                      isAccent
+                        ? "text-center text-sm text-[#CFC9BE] sm:text-base"
+                        : "text-center text-sm text-[#4a564f] sm:text-base dark:text-[#CFC9BE]"
+                    }
+                  >
+                    {t(`cards.${card.key}.description`)}
+                  </p>
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>

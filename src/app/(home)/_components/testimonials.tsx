@@ -10,40 +10,40 @@ export function Testimonials() {
   return (
     <section
       id={homeSections.testimonials}
-      className="w-full bg-gradient-to-t from-white to-gray-50 py-12 md:py-24 dark:from-gray-900 dark:to-gray-800"
+      className="w-full bg-[#24332D] py-12 text-[#F6F5F0] md:py-24"
     >
       <div className="container mx-auto px-4 md:px-6">
         <div className="flex flex-col items-center justify-center space-y-4 text-center">
           <div className="space-y-2">
-            <h2 className="text-3xl font-bold tracking-tighter md:text-4xl">
+            <h2 className="font-serif text-3xl tracking-tight md:text-5xl">
               {t("title")}
             </h2>
-            <p className="text-muted-foreground mx-auto max-w-[700px] md:text-xl">
+            <p className="mx-auto max-w-[700px] text-[#CFC9BE] md:text-xl">
               {t("description")}
             </p>
           </div>
           <div className="mt-8 grid w-full max-w-3xl grid-cols-1 gap-4 sm:grid-cols-3 sm:gap-8">
-            <div className="flex flex-col items-center rounded-xl border bg-white p-4 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-md sm:p-6 dark:border-gray-700 dark:bg-gray-800">
-              <span className="text-3xl font-bold text-teal-500 sm:text-4xl">
+            <div className="flex flex-col items-center border border-white/10 bg-[#2d3d36] p-4 transition-all duration-200 hover:-translate-y-1 sm:p-6">
+              <span className="text-3xl font-extrabold text-[#A8CDB7] sm:text-4xl">
                 50K+
               </span>
-              <span className="text-muted-foreground text-sm sm:text-base">
+              <span className="text-sm text-[#CFC9BE] sm:text-base">
                 {t("stats.downloads")}
               </span>
             </div>
-            <div className="flex flex-col items-center rounded-xl border bg-white p-4 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-md sm:p-6 dark:border-gray-700 dark:bg-gray-800">
-              <span className="text-3xl font-bold text-teal-500 sm:text-4xl">
+            <div className="flex flex-col items-center border border-white/10 bg-[#2d3d36] p-4 transition-all duration-200 hover:-translate-y-1 sm:p-6">
+              <span className="text-3xl font-extrabold text-[#A8CDB7] sm:text-4xl">
                 100K+
               </span>
-              <span className="text-muted-foreground text-sm sm:text-base">
+              <span className="text-sm text-[#CFC9BE] sm:text-base">
                 {t("stats.users")}
               </span>
             </div>
-            <div className="flex flex-col items-center rounded-xl border bg-white p-4 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-md sm:p-6 dark:border-gray-700 dark:bg-gray-800">
-              <span className="text-3xl font-bold text-teal-500 sm:text-4xl">
+            <div className="flex flex-col items-center border border-white/10 bg-[#2d3d36] p-4 transition-all duration-200 hover:-translate-y-1 sm:p-6">
+              <span className="text-3xl font-extrabold text-[#A8CDB7] sm:text-4xl">
                 4.9/5
               </span>
-              <span className="text-muted-foreground text-sm sm:text-base">
+              <span className="text-sm text-[#CFC9BE] sm:text-base">
                 {t("stats.rating")}
               </span>
             </div>

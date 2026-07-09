@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { DM_Sans as RootFont } from "next/font/google";
+import { Work_Sans, Instrument_Serif } from "next/font/google";
 
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/features/theme/theme-provider";
@@ -12,9 +12,17 @@ import { getLocale, getMessages } from "next-intl/server";
 
 import "./globals.css";
 
-const geistSans = RootFont({
-  variable: "--font-root-sans",
+const workSans = Work_Sans({
+  variable: "--font-work-sans",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+});
+
+const instrumentSerif = Instrument_Serif({
+  variable: "--font-instrument-serif",
+  subsets: ["latin"],
+  weight: ["400"],
+  style: ["normal", "italic"],
 });
 
 export const metadata: Metadata = siteMetadata;
@@ -29,7 +37,14 @@ export default async function RootLayout({
 
   return (
     <html lang={locale} className="scroll-smooth" suppressHydrationWarning>
-      <body className={cn("antialiased", geistSans.className)}>
+      <body
+        className={cn(
+          "font-sans antialiased",
+          workSans.variable,
+          instrumentSerif.variable,
+          workSans.className
+        )}
+      >
         <LocaleProvider locale={locale} messages={messages}>
           <ThemeProvider>
             <ReactQueryProvider>
