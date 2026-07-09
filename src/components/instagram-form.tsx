@@ -22,12 +22,24 @@ import { Button } from "@/components/ui/button";
 
 import { Download, Loader2, X } from "lucide-react";
 
-import { cn, getPostShortcode, isShortcodePresent } from "@/lib/utils";
+import { cn, getPostShortcode, isShortcodePresent, buildDownloadBasename } from "@/lib/utils";
 import { useGetInstagramPostMutation } from "@/features/react-query/mutations/instagram";
 import { HTTP_CODE_ENUM } from "@/features/api/http-codes";
 
 // 5 minutes
 const CACHE_TIME = 5 * 60 * 1000;
+
+type DownloadFile = {
+  url: string;
+  type: "image" | "video";
+  index: number;
+};
+
+type DownloadMeta = {
+  username: string;
+  caption: string;
+  basename: string;
+};
 
 const useFormSchema = () => {
   const t = useTranslations("components.instagramForm.inputs");
@@ -49,19 +61,23 @@ const useFormSchema = () => {
   });
 };
 
-function triggerDownload(videoUrl: string) {
+function triggerDownload(
+  fileUrl: string,
+  type: "image" | "video",
+  basename: string,
+  index?: number
+) {
   // Ensure we are in a browser environment
   if (typeof window === "undefined") return;
 
-  const randomTime = new Date().getTime().toString().slice(-8);
-  const filename = `gram-grabberz-${randomTime}.mp4`;
+  const extension = type === "image" ? "jpg" : "mp4";
+  const suffix = typeof index === "number" ? `_${String(index + 1).padStart(2, "0")}` : "";
+  const filename = `${basename}${suffix}.${extension}`;
 
   // Construct the URL to your proxy API route
   const proxyUrl = new URL("/api/download-proxy", window.location.origin); // Use relative path + origin
-  proxyUrl.searchParams.append("url", videoUrl);
+  proxyUrl.searchParams.append("url", fileUrl);
   proxyUrl.searchParams.append("filename", filename);
-
-  console.log("Using proxy URL:", proxyUrl.toString()); // For debugging
 
   const link = document.createElement("a");
   // Set href to your proxy route
@@ -83,8 +99,63 @@ function triggerDownload(videoUrl: string) {
   document.body.removeChild(link);
 }
 
+async function triggerZipDownload(
+  files: DownloadFile[],
+  meta: DownloadMeta,
+  shortcode?: string
+) {
+  if (typeof window === "undefined") return;
+
+  const response = await fetch("/api/download-zip", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      files,
+      shortcode,
+      basename: meta.basename,
+      username: meta.username,
+      caption: meta.caption,
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to create zip download");
+  }
+
+  const blob = await response.blob();
+  const objectUrl = URL.createObjectURL(blob);
+  const filename = `${meta.basename}.zip`;
+
+  const link = document.createElement("a");
+  link.href = objectUrl;
+  link.setAttribute("download", filename);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(objectUrl);
+}
+
+async function triggerDownloads(
+  files: DownloadFile[],
+  meta: DownloadMeta,
+  shortcode?: string
+) {
+  if (files.length > 1) {
+    await triggerZipDownload(files, meta, shortcode);
+    return;
+  }
+
+  const [file] = files;
+  if (file) {
+    triggerDownload(file.url, file.type, meta.basename, file.index);
+  }
+}
+
 type CachedUrl = {
-  videoUrl?: string;
+  files?: DownloadFile[];
+  meta?: DownloadMeta;
   expiresAt: number;
   invalid?: {
     messageKey: string;
@@ -117,6 +188,16 @@ export function InstagramForm(props: { className?: string }) {
   const isDisabled = isPending || !form.formState.isDirty;
   const isShowClearButton = form.watch("url").length > 0;
 
+  function getSuccessToast(count: number) {
+    if (count > 1 && t.has("toasts.successCarousel")) {
+      return t("toasts.successCarousel", { count });
+    }
+    if (count > 1) {
+      return `Downloading ${count} files as ZIP...`;
+    }
+    return t("toasts.success");
+  }
+
   function clearUrlField() {
     form.setValue("url", "");
     form.clearErrors("url");
@@ -125,11 +206,13 @@ export function InstagramForm(props: { className?: string }) {
 
   function setCachedUrl(
     shortcode: string,
-    videoUrl?: string,
+    files?: CachedUrl["files"],
+    meta?: DownloadMeta,
     invalid?: CachedUrl["invalid"]
   ) {
     cachedUrls.current?.set(shortcode, {
-      videoUrl,
+      files,
+      meta,
       expiresAt: Date.now() + CACHE_TIME,
       invalid,
     });
@@ -168,8 +251,13 @@ export function InstagramForm(props: { className?: string }) {
       return;
     }
 
-    if (cachedUrl?.videoUrl) {
-      triggerDownload(cachedUrl.videoUrl);
+    if (cachedUrl?.files?.length && cachedUrl.meta) {
+      await triggerDownloads(cachedUrl.files, cachedUrl.meta, shortcode);
+      toast.success(getSuccessToast(cachedUrl.files.length), {
+        id: "toast-success",
+        position: "top-center",
+        duration: 2000,
+      });
       return;
     }
 
@@ -177,17 +265,52 @@ export function InstagramForm(props: { className?: string }) {
       const { data, status } = await getInstagramPost({ shortcode });
 
       if (status === HTTP_CODE_ENUM.OK) {
-        const downloadUrl = data.data.xdt_shortcode_media.video_url;
-        if (downloadUrl) {
-          triggerDownload(downloadUrl);
-          setCachedUrl(shortcode, downloadUrl);
-          toast.success(t("toasts.success"), {
+        const media = data.data.xdt_shortcode_media;
+        const files =
+          data.data.downloadable_media?.length
+            ? data.data.downloadable_media
+            : media.video_url
+              ? [
+                  {
+                    url: media.video_url,
+                    type: "video" as const,
+                    index: 0,
+                  },
+                ]
+              : media.display_url
+                ? [
+                    {
+                      url: media.display_url,
+                      type: "image" as const,
+                      index: 0,
+                    },
+                  ]
+                : [];
+
+        const username =
+          data.data.download_meta?.username || media.owner?.username || "";
+        const caption =
+          data.data.download_meta?.caption ||
+          media.edge_media_to_caption?.edges?.[0]?.node?.text ||
+          "";
+        const meta: DownloadMeta = {
+          username,
+          caption,
+          basename:
+            data.data.download_meta?.basename ||
+            buildDownloadBasename(username, caption),
+        };
+
+        if (files.length) {
+          await triggerDownloads(files, meta, shortcode);
+          setCachedUrl(shortcode, files, meta);
+          toast.success(getSuccessToast(files.length), {
             id: "toast-success",
             position: "top-center",
-            duration: 1500,
+            duration: 2000,
           });
         } else {
-          throw new Error("Video URL not found");
+          throw new Error("Media URL not found");
         }
       } else if (
         status === HTTP_CODE_ENUM.NOT_FOUND ||
@@ -201,12 +324,12 @@ export function InstagramForm(props: { className?: string }) {
           status === HTTP_CODE_ENUM.BAD_REQUEST ||
           status === HTTP_CODE_ENUM.NOT_FOUND
         ) {
-          setCachedUrl(shortcode, undefined, {
+          setCachedUrl(shortcode, undefined, undefined, {
             messageKey: errorMessageKey,
           });
         }
       } else {
-        throw new Error("Failed to fetch video");
+        throw new Error("Failed to fetch media");
       }
     } catch (error) {
       console.error(error);

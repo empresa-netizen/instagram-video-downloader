@@ -18,10 +18,11 @@
         "serverError": "El servidor no está disponible, por favor intenta de nuevo más tarde"
       },
       "toasts": {
-        "success": "La descarga del video está comenzando...",
-        "error": "Algo salió mal, por favor intenta de nuevo."
+        "success": "La descarga esta comenzando...",
+        "error": "Algo salió mal, por favor intenta de nuevo.",
+        "successCarousel": "Descargando {count} archivos en ZIP..."
       },
-      "hint": "Funciona con publicaciones y Reels de Instagram",
+      "hint": "Funciona con publicaciones, Reels y carruseles de Instagram",
       "submit": "Descargar"
     }
   },

@@ -2,8 +2,8 @@
   "instagramForm": {
     "inputs": {
       "url": {
-        "label": "Video URL",
-        "placeholder": "Paste Instagram video URL here...",
+        "label": "Post URL",
+        "placeholder": "Paste Instagram post, reel or carousel URL here...",
         "validation": {
           "required": "Instagram post URL is required",
           "invalid": "Please enter a valid Instagram post URL"
@@ -12,15 +12,16 @@
     },
     "serverErrors": {
       "notFound": "The post you are looking for was not found",
-      "notVideo": "This post does not contain a video",
+      "notVideo": "This post does not contain downloadable media",
       "tooManyRequests": "Too many requests, please try again later",
       "serverError": "Server is unavailable, please try again later"
     },
     "toasts": {
-      "success": "Video download is starting...",
+      "success": "Download is starting...",
+      "successCarousel": "Downloading {count} files as ZIP...",
       "error": "Something went wrong, please try again."
     },
-    "hint": "Works with Instagram posts and reels",
+    "hint": "Works with Instagram posts, reels and carousels",
     "submit": "Download"
   }
 }

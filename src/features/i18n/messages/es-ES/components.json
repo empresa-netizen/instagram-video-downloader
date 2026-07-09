@@ -2,25 +2,26 @@
   "instagramForm": {
     "inputs": {
       "url": {
-        "label": "URL del video",
-        "placeholder": "Pega la URL del video de Instagram aquí...",
+        "label": "URL de la publicacion",
+        "placeholder": "Pega la URL del post, reel o carrusel de Instagram aqui...",
         "validation": {
-          "required": "Se requiere la URL de la publicación de Instagram",
-          "invalid": "Por favor, introduce una URL de publicación de Instagram válida"
+          "required": "Se requiere la URL de la publicacion de Instagram",
+          "invalid": "Por favor, introduce una URL de publicacion de Instagram valida"
         }
       }
     },
     "serverErrors": {
-      "notFound": "No se encontró la publicación que estás buscando",
-      "notVideo": "Esta publicación no contiene un video",
-      "tooManyRequests": "Demasiadas solicitudes, por favor intenta de nuevo más tarde",
-      "serverError": "El servidor no está disponible, por favor intenta de nuevo más tarde"
+      "notFound": "No se encontro la publicacion que estas buscando",
+      "notVideo": "Esta publicacion no contiene medios descargables",
+      "tooManyRequests": "Demasiadas solicitudes, por favor intenta de nuevo mas tarde",
+      "serverError": "El servidor no esta disponible, por favor intenta de nuevo mas tarde"
     },
     "toasts": {
-      "success": "La descarga del video está comenzando...",
-      "error": "Algo salió mal, por favor intenta de nuevo."
+      "success": "La descarga esta comenzando...",
+      "successCarousel": "Descargando {count} archivos en ZIP...",
+      "error": "Algo salio mal, por favor intenta de nuevo."
     },
-    "hint": "Funciona con publicaciones y Reels de Instagram",
+    "hint": "Funciona con publicaciones, Reels y carruseles de Instagram",
     "submit": "Descargar"
   }
 }

@@ -22,27 +22,34 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Fetch the video from the external URL
+    // Fetch the media from the external URL
     const videoResponse = await fetch(fileUrl);
 
     if (!videoResponse.ok) {
-      throw new Error(`Failed to fetch video: ${videoResponse.statusText}`);
+      throw new Error(`Failed to fetch media: ${videoResponse.statusText}`);
     }
 
-    // Get the video data as a ReadableStream
+    // Get the media data as a ReadableStream
     const videoStream = videoResponse.body;
 
     if (!videoStream) {
-      throw new Error("Video stream is not available");
+      throw new Error("Media stream is not available");
     }
 
     // Set headers to force download
     const headers = new Headers();
     headers.set("Content-Disposition", `attachment; filename="${filename}"`);
-    // Try to get Content-Type from original response, fallback to generic video type
+    // Try to get Content-Type from original response, fallback by extension
+    const fallbackType = filename.endsWith(".jpg") || filename.endsWith(".jpeg")
+      ? "image/jpeg"
+      : filename.endsWith(".png")
+        ? "image/png"
+        : filename.endsWith(".webp")
+          ? "image/webp"
+          : "video/mp4";
     headers.set(
       "Content-Type",
-      videoResponse.headers.get("Content-Type") || "video/mp4"
+      videoResponse.headers.get("Content-Type") || fallbackType
     );
     // Optionally set Content-Length if available
     if (videoResponse.headers.get("Content-Length")) {

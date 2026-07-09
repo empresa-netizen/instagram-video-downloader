@@ -4,8 +4,22 @@ export type IG_GraphQLResponseDto = {
   status: string;
 };
 
+export type DownloadableMediaDto = {
+  url: string;
+  type: "image" | "video";
+  index: number;
+};
+
+export type DownloadMetaDto = {
+  username: string;
+  caption: string;
+  basename: string;
+};
+
 export type DataDto = {
   xdt_shortcode_media: XdtShortcodeMediaDto;
+  downloadable_media: DownloadableMediaDto[];
+  download_meta: DownloadMetaDto;
 };
 
 export type XdtShortcodeMediaDto = {

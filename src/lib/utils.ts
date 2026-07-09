@@ -27,3 +27,43 @@ export function getPostShortcode(url: string): string | null {
     return null;
   }
 }
+
+function stripDiacritics(value: string) {
+  return value.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+}
+
+export function sanitizeFilenamePart(value: string) {
+  return stripDiacritics(value)
+    .replace(/[^\w\s-]+/g, " ")
+    .trim()
+    .replace(/[\s_]+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "")
+    .toLowerCase();
+}
+
+export function getCaptionFirstWords(caption: string, count = 3) {
+  return caption
+    .replace(/\s+/g, " ")
+    .trim()
+    .split(" ")
+    .filter(Boolean)
+    .slice(0, count)
+    .join(" ");
+}
+
+/**
+ * Builds download basename as: {username}_{first-3-caption-words}
+ * Example: mgteamoficial_a-equipe-esta
+ */
+export function buildDownloadBasename(
+  username?: string | null,
+  caption?: string | null
+) {
+  const userPart = sanitizeFilenamePart(username || "instagram") || "instagram";
+  const captionWords = getCaptionFirstWords(caption || "", 3);
+  const captionPart =
+    sanitizeFilenamePart(captionWords) || "post";
+
+  return `${userPart}_${captionPart}`.slice(0, 120);
+}

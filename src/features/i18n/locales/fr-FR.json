@@ -18,10 +18,11 @@
         "serverError": "Le serveur est indisponible, veuillez réessayer plus tard"
       },
       "toasts": {
-        "success": "Le téléchargement de la vidéo démarre...",
-        "error": "Quelque chose s'est mal passé, veuillez réessayer."
+        "success": "Le téléchargement démarre...",
+        "error": "Quelque chose s'est mal passé, veuillez réessayer.",
+        "successCarousel": "Téléchargement de {count} fichiers en ZIP..."
       },
-      "hint": "Fonctionne avec les publications et les Reels Instagram",
+      "hint": "Fonctionne avec les publications, Reels et carrousels Instagram",
       "submit": "Télécharger"
     }
   },
