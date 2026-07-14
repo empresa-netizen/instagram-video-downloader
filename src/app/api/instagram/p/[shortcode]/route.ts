@@ -5,6 +5,7 @@ import {
   mapWebInfoToLegacyGraphQL,
 } from "./utils";
 import { buildDownloadBasename } from "@/lib/utils";
+import { cookieName, isSessionValid } from "@/lib/auth";
 
 interface RouteContext {
   params: Promise<{
@@ -23,7 +24,10 @@ type WebInfoResponse = {
   status?: string;
 };
 
-export async function GET(_: NextRequest, context: RouteContext) {
+export async function GET(request: NextRequest, context: RouteContext) {
+  if (!isSessionValid(request.cookies.get(cookieName)?.value)) {
+    return NextResponse.json({ error: "unauthorized", message: "Login required" }, { status: 401 });
+  }
   const { shortcode } = await context.params;
 
   if (!shortcode) {

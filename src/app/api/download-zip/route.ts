@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import JSZip from "jszip";
 
 import { buildDownloadBasename } from "@/lib/utils";
+import { cookieName, isSessionValid } from "@/lib/auth";
+import { proxyFetch } from "@/lib/proxy-fetch";
 
 type ZipFileInput = {
   url: string;
@@ -27,6 +29,9 @@ function getExtension(type: "image" | "video", contentType: string | null) {
 
 export async function POST(request: NextRequest) {
   try {
+    if (!isSessionValid(request.cookies.get(cookieName)?.value)) {
+      return NextResponse.json({ error: "unauthorized", message: "Login required" }, { status: 401 });
+    }
     const body = (await request.json()) as {
       files?: ZipFileInput[];
       shortcode?: string;
@@ -68,7 +73,7 @@ export async function POST(request: NextRequest) {
 
     await Promise.all(
       files.map(async (file) => {
-        const response = await fetch(file.url);
+        const response = await proxyFetch(file.url);
         if (!response.ok) {
           throw new Error(
             `Failed to fetch file ${file.index + 1}: ${response.statusText}`

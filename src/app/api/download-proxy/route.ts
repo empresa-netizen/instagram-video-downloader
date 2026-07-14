@@ -1,7 +1,10 @@
 // app/api/download-proxy/route.ts
 import { NextRequest, NextResponse } from "next/server";
+import { cookieName, isSessionValid } from "@/lib/auth";
+import { proxyFetch } from "@/lib/proxy-fetch";
 
 export async function GET(request: NextRequest) {
+  if (!isSessionValid(request.cookies.get(cookieName)?.value)) return NextResponse.json({ error: "unauthorized", message: "Login required" }, { status: 401 });
   const searchParams = request.nextUrl.searchParams;
   const fileUrl = searchParams.get("url");
   const filename = searchParams.get("filename") || "gram-grabberz-video.mp4"; // Default filename
@@ -23,7 +26,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Fetch the media from the external URL
-    const videoResponse = await fetch(fileUrl);
+    const videoResponse = await proxyFetch(fileUrl);
 
     if (!videoResponse.ok) {
       throw new Error(`Failed to fetch media: ${videoResponse.statusText}`);
@@ -60,7 +63,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Return the stream response
-    return new NextResponse(videoStream, {
+    return new NextResponse(videoStream as ReadableStream, {
       status: 200,
       headers: headers,
     });
