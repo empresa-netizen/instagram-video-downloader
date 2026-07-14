@@ -14,7 +14,10 @@ export function createSession() {
 export function isSessionValid(session?: string) {
   if (!session || !process.env.SESSION_SECRET) return false;
   const [expires, signature] = session.split(".");
-  return Boolean(expires && signature && Number(expires) > Date.now() && crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(sign(expires))));
+  if (!expires || !signature || Number(expires) <= Date.now()) return false;
+  const received = Buffer.from(signature);
+  const expected = Buffer.from(sign(expires));
+  return received.length === expected.length && crypto.timingSafeEqual(received, expected);
 }
 
 export { cookieName };

@@ -7,6 +7,7 @@ import { ArrowDown } from "lucide-react";
 import { homeLinks, homeSections } from "@/lib/constants";
 import { InstagramForm } from "@/components/instagram-form";
 import { LogoImage } from "@/components/logo";
+import { SessionStatus } from "@/components/session-status";
 
 export function Hero() {
   const t = useTranslations("pages.home.hero");
@@ -16,6 +17,7 @@ export function Hero() {
       id={homeSections.hero}
       className="relative w-full scroll-mt-16 overflow-hidden py-16 md:py-24 lg:py-28"
     >
+      <SessionStatus />
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute top-20 -left-24 h-72 w-72 rounded-full bg-[#A8CDB7]/25 blur-3xl" />
         <div className="absolute right-0 bottom-0 h-80 w-80 translate-x-1/3 bg-[#24332D]/8 blur-3xl" />
