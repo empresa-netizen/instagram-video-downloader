@@ -38,6 +38,8 @@ export async function POST(request: Request) {
     directory = await fs.mkdtemp(path.join(os.tmpdir(), "mgteam-download-"));
     const output = path.join(directory, "%(playlist_index&{} - |)s%(id)s.%(ext)s");
     const binary = path.join(process.cwd(), "bin", "yt-dlp");
+    // Shared hosting can restore uploaded binaries without their executable bit.
+    await fs.chmod(binary, 0o755);
     const isInstagram = new URL(url).hostname.toLowerCase().includes("instagram") || new URL(url).hostname.toLowerCase() === "instagr.am";
     const args = [url, "--no-part", "--restrict-filenames", "--ffmpeg-location", ffmpegPath || "", "-o", output, "--no-warnings", "--quiet"];
     if (isInstagram) {
