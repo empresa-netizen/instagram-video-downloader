@@ -28,7 +28,9 @@ export function InstagramForm(props: { className?: string }) {
       const fileUrl = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = fileUrl;
-      link.download = "mgteam-download.mp4";
+      const disposition = response.headers.get("content-disposition");
+      const filename = disposition?.match(/filename="?([^";]+)"?/i)?.[1] || "mgteam-download";
+      link.download = filename;
       link.click();
       URL.revokeObjectURL(fileUrl);
       toast.success("Your download is ready.");
@@ -44,9 +46,9 @@ export function InstagramForm(props: { className?: string }) {
       <Input value={url} onChange={(event) => setUrl(event.target.value)} type="url" required placeholder="Paste a public YouTube or Instagram URL" />
       <Button disabled={busy} type="submit" className="w-full rounded-none bg-[#24332D] px-6 font-extrabold tracking-[0.08em] text-[#F6F5F0] uppercase hover:bg-[#314039]">
         {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
-        {busy ? "Preparing download…" : "Download video"}
+        {busy ? "Preparing download…" : "Download media"}
       </Button>
-      <p className="text-muted-foreground text-center text-xs">Private downloader for public YouTube and Instagram media.</p>
+      <p className="text-muted-foreground text-center text-xs">Baixa vídeos do YouTube e posts, Reels, fotos e carrosséis públicos do Instagram. Carrosséis são entregues em ZIP.</p>
     </form>
   );
 }
