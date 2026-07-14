@@ -1,10 +1,10 @@
-import crypto from "node:crypto";
 import { createReadStream, promises as fs } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { Readable } from "node:stream";
 import ffmpegPath from "ffmpeg-static";
 import YTDlpWrapModule from "yt-dlp-wrap";
+import { cookieName, isSessionValid } from "@/lib/auth";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -12,9 +12,9 @@ export const dynamic = "force-dynamic";
 const hosts = new Set(["youtube.com", "www.youtube.com", "m.youtube.com", "youtu.be", "instagram.com", "www.instagram.com", "m.instagram.com", "instagr.am"]);
 const YTDlpWrap = (YTDlpWrapModule as unknown as { default: typeof YTDlpWrapModule }).default;
 
-function authorize(value: string | null) {
-  const expected = process.env.DOWNLOADER_API_KEY;
-  if (!expected || !value || value.length !== expected.length || !crypto.timingSafeEqual(Buffer.from(value), Buffer.from(expected))) throw new Error("Unauthorized");
+function authorize(request: Request) {
+  const session = request.headers.get("cookie")?.match(new RegExp(`${cookieName}=([^;]+)`))?.[1];
+  if (!isSessionValid(session)) throw new Error("Unauthorized");
 }
 
 function safeUrl(value: unknown) {
@@ -27,7 +27,7 @@ function safeUrl(value: unknown) {
 export async function POST(request: Request) {
   let directory: string | undefined;
   try {
-    authorize(request.headers.get("X-API-Key"));
+    authorize(request);
     const url = safeUrl((await request.json()).url);
     directory = await fs.mkdtemp(path.join(os.tmpdir(), "mgteam-download-"));
     const output = path.join(directory, "%(id)s.%(ext)s");

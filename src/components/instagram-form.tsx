@@ -9,7 +9,6 @@ import { cn } from "@/lib/utils";
 
 export function InstagramForm(props: { className?: string }) {
   const [url, setUrl] = React.useState("");
-  const [apiKey, setApiKey] = React.useState("");
   const [busy, setBusy] = React.useState(false);
 
   async function submit(event: React.FormEvent<HTMLFormElement>) {
@@ -18,7 +17,7 @@ export function InstagramForm(props: { className?: string }) {
     try {
       const response = await fetch("/api/private-download", {
         method: "POST",
-        headers: { "Content-Type": "application/json", "X-API-Key": apiKey },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ url }),
       });
       if (!response.ok) {
@@ -43,7 +42,6 @@ export function InstagramForm(props: { className?: string }) {
   return (
     <form onSubmit={submit} className={cn("w-full space-y-3", props.className)}>
       <Input value={url} onChange={(event) => setUrl(event.target.value)} type="url" required placeholder="Paste a public YouTube or Instagram URL" />
-      <Input value={apiKey} onChange={(event) => setApiKey(event.target.value)} type="password" required placeholder="Private access key" autoComplete="off" />
       <Button disabled={busy} type="submit" className="w-full rounded-none bg-[#24332D] px-6 font-extrabold tracking-[0.08em] text-[#F6F5F0] uppercase hover:bg-[#314039]">
         {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
         {busy ? "Preparing download…" : "Download video"}
