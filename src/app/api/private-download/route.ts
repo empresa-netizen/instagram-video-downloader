@@ -10,6 +10,7 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 const hosts = new Set(["youtube.com", "www.youtube.com", "m.youtube.com", "youtu.be", "instagram.com", "www.instagram.com", "m.instagram.com", "instagr.am"]);
+const YTDlpWrap = (YTDlpWrapModule as unknown as { default: typeof YTDlpWrapModule }).default;
 
 function authorize(value: string | null) {
   const expected = process.env.DOWNLOADER_API_KEY;
@@ -33,12 +34,12 @@ export async function POST(request: Request) {
     const binary = path.join(process.cwd(), "bin", "yt-dlp");
     const args = [url, "--no-playlist", "--no-part", "--restrict-filenames", "-f", "bv*+ba/b", "--merge-output-format", "mp4", "--ffmpeg-location", ffmpegPath || "", "-o", output, "--no-warnings", "--quiet"];
     if (process.env.DATAIMPULSE_PROXY_URL) args.push("--proxy", process.env.DATAIMPULSE_PROXY_URL);
-    await new YTDlpWrapModule.default(binary).execPromise(args);
+    await new YTDlpWrap(binary).execPromise(args);
     const name = (await fs.readdir(directory)).find((file) => /\.(mp4|mkv|webm|mov)$/i.test(file));
     if (!name) throw new Error("No media file produced");
     const file = path.join(directory, name);
     const stream = Readable.toWeb(createReadStream(file)) as ReadableStream;
-    return new Response(stream, { headers: { "Content-Type": "application/octet-stream", "Content-Disposition": `attachment; filename="${name}" } });
+    return new Response(stream, { headers: { "Content-Type": "application/octet-stream", "Content-Disposition": `attachment; filename="${name}"` } });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Download failed";
     return Response.json({ error: message }, { status: message === "Unauthorized" ? 401 : 422 });
