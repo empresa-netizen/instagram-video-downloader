@@ -2,14 +2,14 @@ import { Metadata } from "next";
 
 export const siteConfig = {
   name: "MGTEAM Downloader",
-  domain: "downloader.mgteamoficial.site",
+  domain: "insta.petelgeuse.com",
   shortName: "MGTEAM",
   creator: "MGTEAM",
   description:
     "Baixe posts, reels e carrosséis do Instagram com a identidade MGTEAM.",
   ogDescription:
     "Ferramenta MGTEAM para baixar posts, reels e carrosséis do Instagram.",
-  url: "https://downloader.mgteamoficial.site",
+  url: "https://insta.petelgeuse.com",
 };
 
 export const siteMetadata: Metadata = {
