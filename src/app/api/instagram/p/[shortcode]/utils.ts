@@ -1,6 +1,7 @@
 import { RequestConfigType } from "@/types/request-config";
 import { IG_GraphQLResponseDto } from "@/features/api/_dto/instagram";
 import { buildDownloadBasename } from "@/lib/utils";
+import { proxyFetch } from "@/lib/proxy-fetch";
 
 const USER_AGENT =
   "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36";
@@ -67,14 +68,14 @@ async function createInstagramSession(shortcode: string): Promise<InstagramSessi
   };
 
   // Warm up anonymous session on homepage first (more reliable CSRF/LSD cookies)
-  const homeResponse = await fetch("https://www.instagram.com/", {
+  const homeResponse = await proxyFetch("https://www.instagram.com/", {
     headers: navHeaders,
     redirect: "follow",
   });
   const homeHtml = await homeResponse.text();
   const cookies = parseCookies(getSetCookieHeaders(homeResponse));
 
-  const postResponse = await fetch(`https://www.instagram.com/p/${shortcode}/`, {
+  const postResponse = await proxyFetch(`https://www.instagram.com/p/${shortcode}/`, {
     headers: {
       ...navHeaders,
       ...(cookies.size
@@ -386,7 +387,7 @@ export async function getInstagramPostGraphQL(
     headers["X-FB-LSD"] = session.lsd;
   }
 
-  return fetch("https://www.instagram.com/graphql/query", {
+  return proxyFetch("https://www.instagram.com/graphql/query", {
     method: "POST",
     headers,
     body: body.toString(),
